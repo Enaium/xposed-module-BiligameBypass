@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="xposed_scope">
+        <item>com.bilibili.azurlane</item>
+        <item>com.miHoYo.ys.bilibili</item>
+        <item>com.knight.union.bili</item>
+    </string-array>
+</resources>
