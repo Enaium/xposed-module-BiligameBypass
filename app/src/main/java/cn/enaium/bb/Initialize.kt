@@ -58,9 +58,14 @@ class Initialize : IXposedHookLoadPackage {
 
         val uidPath = "/storage/emulated/0/bilibili-uid.txt"
 
-        val uid = if (File(uidPath).exists()) {
+        val uid: String? = if (File(uidPath).exists()) {
             val fileInputStream = FileInputStream(uidPath)
-            String(fileInputStream.readBytes())
+            val string = String(fileInputStream.readBytes())
+            if (string == "") {
+                null
+            } else {
+                string
+            }
         } else {
             null
         }
@@ -108,7 +113,7 @@ class Initialize : IXposedHookLoadPackage {
                                     val jsonObject = JSONObject(toString)
 
                                     //判断为登录
-                                    if (jsonObject.has("code") && jsonObject.has("auth_name")) {
+                                    if (jsonObject.has("code") && jsonObject.has("auth_name") && uid != null) {
                                         XposedBridge.log("BiligameBypass:登录")
 
                                         val user = JSONObject()
@@ -118,7 +123,7 @@ class Initialize : IXposedHookLoadPackage {
                                         user.put("code", 0)
                                         user.put("access_key", "NULL")
                                         user.put("expires", "NULL")
-                                        user.put("uid", uid ?: "NULL")
+                                        user.put("uid", uid)
                                         user.put("face", "NULL")
                                         user.put("s_face", "NULL")
                                         user.put("uname", "NULL")
