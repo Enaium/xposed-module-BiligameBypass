@@ -25,7 +25,6 @@ package cn.enaium.bb
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.Toast
 import de.robv.android.xposed.*
@@ -56,19 +55,6 @@ class Initialize : IXposedHookLoadPackage {
             return
         }
 
-        val uidPath = "/storage/emulated/0/bilibili-uid.txt"
-
-        val uid: String? = if (File(uidPath).exists()) {
-            val fileInputStream = FileInputStream(uidPath)
-            val string = String(fileInputStream.readBytes())
-            if (string == "") {
-                null
-            } else {
-                string
-            }
-        } else {
-            null
-        }
 
         var context: Context? = null
 
@@ -111,6 +97,24 @@ class Initialize : IXposedHookLoadPackage {
                                 val toString = param.result.toString()
                                 if (toString.startsWith("{") && toString.endsWith("}")) {
                                     val jsonObject = JSONObject(toString)
+
+                                    val uid: String? = if (context != null) {
+                                        val filesDir = File(context!!.filesDir, "bilibili-uid.txt")
+                                        if (filesDir.exists()) {
+                                            val fileInputStream = FileInputStream(filesDir)
+                                            val string = String(fileInputStream.readBytes())
+                                            if (string == "") {
+                                                null
+                                            } else {
+                                                string
+                                            }
+                                        } else {
+                                            filesDir.createNewFile()
+                                            null
+                                        }
+                                    } else {
+                                        null
+                                    }
 
                                     //判断为登录
                                     if (jsonObject.has("code") && jsonObject.has("auth_name") && uid != null) {
