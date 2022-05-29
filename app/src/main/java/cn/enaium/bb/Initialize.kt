@@ -47,6 +47,23 @@ class Initialize : IXposedHookLoadPackage {
             return
         }
 
+
+        XposedHelpers.findAndHookMethod(System::class.java,
+            "exit", Int::class.java,
+            object : XC_MethodReplacement() {
+                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                    return null
+                }
+            })
+
+        XposedHelpers.findAndHookMethod(Runtime::class.java,
+            "exit", Int::class.java,
+            object : XC_MethodReplacement() {
+                override fun replaceHookedMethod(param: MethodHookParam?): Any? {
+                    return null
+                }
+            })
+
         val cGSCPubCommon: Class<*>?
 
         try {
@@ -54,7 +71,6 @@ class Initialize : IXposedHookLoadPackage {
         } catch (_: ClassNotFoundException) {
             return
         }
-
 
         var context: Context? = null
 
